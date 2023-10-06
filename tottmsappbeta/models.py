@@ -202,3 +202,11 @@ class SalaryTransfer(models.Model):
     teacher= models.ForeignKey(Teacher,on_delete=models.CASCADE)
     region = models.ForeignKey(Region,on_delete=models.CASCADE, null=True, blank=True)
     district = models.ForeignKey(District, on_delete=models.CASCADE,null=True, blank=True)
+    
+    
+class Forms(models.Model):
+    form_name = models.CharField(max_length=100)
+    form = models.FileField(upload_to='forms/')
+    
+    def __str__(self):
+        return self.form_name

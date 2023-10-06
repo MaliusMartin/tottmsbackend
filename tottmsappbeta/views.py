@@ -1,11 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
+from django.core import serializers
 import rest_framework.status as status
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse, FileResponse
 from rest_framework import permissions
 from rest_framework.decorators import api_view, permission_classes
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
-from .models import EducationLevel, Region, District, School, Subject, Teacher, TransferApplication, SpecialTransfer, Request, ArrivingTeachers, UserRoles, UserRoleAssignment, Notification,SchoolLevel,SalaryScale,WorkerGrade,SalaryTransfer
+from .models import EducationLevel, Region, District, School, Subject, Teacher, TransferApplication, SpecialTransfer, Request, ArrivingTeachers, UserRoles, UserRoleAssignment, Notification,SchoolLevel,SalaryScale,WorkerGrade,SalaryTransfer,Forms
 from .serializers import EducationLevelSerializer,  RegionSerializer, DistrictSerializer, SchoolSerializer, SubjectSerializer, TeacherSerializer, TransferApplicationSerializer, SpecialTransferSerializer, RequestSerializer, ArrivingTeachersSerializer,UserRolesSerializer, UserRoleAssignmentSerializer, NotificationSerializer,SchoolLevelSerializer, SalaryScaleSerializer,WorkerGradeSerializer,SalaryTransferSerializer
 
 
@@ -774,7 +775,7 @@ def salary_transfer_api(request, id=0):
         except SalaryTransfer.DoesNotExist:
             return JsonResponse('SalaryTransfer not found', status=status.HTTP_404_NOT_FOUND)
         
-        
+ #Filterling Districts       
 @csrf_exempt
 def get_districts_for_region(request, id):
     region = Region.objects.get(pk=id)
@@ -788,3 +789,68 @@ def get_districts_for_region(request, id):
         })
 
     return JsonResponse(district_data, safe=False)
+
+
+#Filterling School
+@csrf_exempt
+# def filter_schools(request):
+#     region_id = request.GET.get('region')
+#     district_id = request.GET.get('district')
+
+#     if region_id:
+#         schools = School.objects.filter(region__id=region_id)
+#     else:
+#         schools = School.objects.all()
+
+#     if district_id:
+#         schools = schools.filter(district__id=district_id)
+
+#     return JsonResponse({
+#         'schools': [school.to_json() for school in schools]
+#     })
+
+@csrf_exempt
+# def filter_schools(request, region_id, district_id):
+#     if region_id:
+#         schools = School.objects.filter(region__id=region_id)
+#     else:
+#         schools = School.objects.all()
+
+#     if district_id:
+#         schools = schools.filter(district__id=district_id)
+
+#     return JsonResponse({
+#         'schools': [school.to_json() for school in schools]
+#     }, safe=False)
+
+
+def filter_schools(request, region_id, district_id):
+    if region_id:
+        schools = School.objects.filter(region__id=region_id)
+    else:
+        schools = School.objects.all()
+
+    if district_id:
+        schools = schools.filter(district__id=district_id)
+
+    # Serialize the queryset to JSON
+    serialized_schools = serializers.serialize('json', schools)
+
+    # Return the serialized data as a JSON response
+    return JsonResponse({'schools': serialized_schools}, safe=False)
+
+
+# def get_form_data(request, id):
+#     form = Forms.objects.get(pk=id)
+#     form_data = form.form.read()
+
+#     return JsonResponse({'form_data': form_data})
+
+def get_form_data(request, id):
+    form = get_object_or_404(Forms, pk=id)
+    
+    # Set the appropriate headers for downloading
+    response = FileResponse(form.form)
+    response['Content-Disposition'] = f'attachment; filename="{form.form_name}"'
+    
+    return response

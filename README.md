@@ -17,7 +17,7 @@
 
 ## About
 
-The Django TOTTMS Backend is the server-side component of the Teacher On-Time Tracking Management System. It provides the backend logic and API endpoints for managing teachers, their attendance, and related data.
+The Django TOTTMS Backend is the server-side component of the Tamisemi Online Teacher Transfer Management System. It provides the backend logic and API endpoints for managing teachers, their attendance, and related data.
 
 ## Project Overview
 This project consists of two main components that work seamlessly together:

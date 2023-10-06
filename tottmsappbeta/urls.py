@@ -1,8 +1,12 @@
-from django.urls import path
+from django.urls import path, re_path
 from . import views
 
 urlpatterns = [
     # Define URL patterns for each model view
+    
+    re_path(r'regions/(?P<region_id>\d+)/districts/(?P<district_id>\d+)/schools/', views.filter_schools, name='filter_schools'),
+    
+    # ...
     path('education-levels/', views.education_level_api, name='education-levels'),
     path('education-levels/<int:id>/', views.education_level_api, name='education-level-detail'),
     
@@ -14,6 +18,7 @@ urlpatterns = [
     
     path('districts/', views.district_api, name='districts'),
     path('districts/<int:id>/', views.district_api, name='district-detail'),
+    
     
     path('schools/', views.school_api, name='schools'),
     path('schools/<int:id>/', views.school_api, name='school-detail'),
@@ -52,6 +57,13 @@ urlpatterns = [
     path('grade/<int:id>/', views.worker_grade_api, name='grade'),
     
     path('regions/<int:id>/districts/', views.get_districts_for_region),
+    
+    path('forms/<int:id>', views.get_form_data, name='forms'),
+    
+    
+   
+    
+    # ...
    
     
     # more URL patterns for other views in tottms app
