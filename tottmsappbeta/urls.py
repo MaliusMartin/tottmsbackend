@@ -63,8 +63,10 @@ urlpatterns = [
     
    
     
-    # ...
-   
-    
     # more URL patterns for other views in tottms app
+    path('genders/', views.GenderListCreateView.as_view(), name='gender-list-create'),
+    path('genders/<int:id/', views.GenderRetrieveUpdateDestroyView.as_view(), name='gender-retrieve-update-destroy'),
+
+    path('positions/', views.PositionListCreateView.as_view(), name='position-list-create'),
+    path('positions/<int:id>/', views.PositionRetrieveUpdateDestroyView.as_view(), name='position-retrieve-update-destroy'),
 ]

@@ -2,12 +2,12 @@ from django.shortcuts import render, get_object_or_404
 from django.core import serializers
 import rest_framework.status as status
 from django.http import JsonResponse, HttpResponse, FileResponse
-from rest_framework import permissions
+from rest_framework import permissions, generics
 from rest_framework.decorators import api_view, permission_classes
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
-from .models import EducationLevel, Region, District, School, Subject, Teacher, TransferApplication, SpecialTransfer, Request, ArrivingTeachers, UserRoles, UserRoleAssignment, Notification,SchoolLevel,SalaryScale,WorkerGrade,SalaryTransfer,Forms
-from .serializers import EducationLevelSerializer,  RegionSerializer, DistrictSerializer, SchoolSerializer, SubjectSerializer, TeacherSerializer, TransferApplicationSerializer, SpecialTransferSerializer, RequestSerializer, ArrivingTeachersSerializer,UserRolesSerializer, UserRoleAssignmentSerializer, NotificationSerializer,SchoolLevelSerializer, SalaryScaleSerializer,WorkerGradeSerializer,SalaryTransferSerializer
+from .models import EducationLevel, Region, District, School, Subject, Teacher, TransferApplication, SpecialTransfer, Request, ArrivingTeachers, UserRoles, UserRoleAssignment, Notification,SchoolLevel,SalaryScale,WorkerGrade,SalaryTransfer,Forms,Gender,Position
+from .serializers import EducationLevelSerializer,  RegionSerializer, DistrictSerializer, SchoolSerializer, SubjectSerializer, TeacherSerializer, TransferApplicationSerializer, SpecialTransferSerializer, RequestSerializer, ArrivingTeachersSerializer,UserRolesSerializer, UserRoleAssignmentSerializer, NotificationSerializer,SchoolLevelSerializer, SalaryScaleSerializer,WorkerGradeSerializer,SalaryTransferSerializer,GenderSerializer,PositionSerializer
 
 
 # Create your views here.
@@ -791,38 +791,9 @@ def get_districts_for_region(request, id):
     return JsonResponse(district_data, safe=False)
 
 
-#Filterling School
-@csrf_exempt
-# def filter_schools(request):
-#     region_id = request.GET.get('region')
-#     district_id = request.GET.get('district')
-
-#     if region_id:
-#         schools = School.objects.filter(region__id=region_id)
-#     else:
-#         schools = School.objects.all()
-
-#     if district_id:
-#         schools = schools.filter(district__id=district_id)
-
-#     return JsonResponse({
-#         'schools': [school.to_json() for school in schools]
-#     })
+#Filterling Schools
 
 @csrf_exempt
-# def filter_schools(request, region_id, district_id):
-#     if region_id:
-#         schools = School.objects.filter(region__id=region_id)
-#     else:
-#         schools = School.objects.all()
-
-#     if district_id:
-#         schools = schools.filter(district__id=district_id)
-
-#     return JsonResponse({
-#         'schools': [school.to_json() for school in schools]
-#     }, safe=False)
-
 
 def filter_schools(request, region_id, district_id):
     if region_id:
@@ -840,11 +811,6 @@ def filter_schools(request, region_id, district_id):
     return JsonResponse({'schools': serialized_schools}, safe=False)
 
 
-# def get_form_data(request, id):
-#     form = Forms.objects.get(pk=id)
-#     form_data = form.form.read()
-
-#     return JsonResponse({'form_data': form_data})
 
 def get_form_data(request, id):
     form = get_object_or_404(Forms, pk=id)
@@ -854,3 +820,20 @@ def get_form_data(request, id):
     response['Content-Disposition'] = f'attachment; filename="{form.form_name}"'
     
     return response
+
+class GenderListCreateView(generics.ListCreateAPIView):
+    queryset = Gender.objects.all()
+    serializer_class = GenderSerializer
+
+class GenderRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Gender.objects.all()
+    serializer_class = GenderSerializer
+
+class PositionListCreateView(generics.ListCreateAPIView):
+    queryset = Position.objects.all()
+    serializer_class = PositionSerializer
+
+class PositionRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Position.objects.all()
+    serializer_class = PositionSerializer
+    

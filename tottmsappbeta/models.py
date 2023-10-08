@@ -1,32 +1,32 @@
 from django.db import models
-
-from datetime import date, timedelta
+from django.contrib.auth.hashers import make_password
+from datetime import timezone
 
 # Create your models here.
 
 
-# Define the EducationLevel model
+# the EducationLevel model
 class EducationLevel(models.Model):
     name = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
     
-# # Define the SchoolLevel model
+# # the SchoolLevel model
 class SchoolLevel(models.Model): 
     levelName = models.CharField(max_length=100,null=True)
     subvote = models.IntegerField(null=True)
     def __str__(self):
         return self.levelName
     
-# Define the Region model
+# the Region model
 class Region(models.Model):
     name = models.CharField(max_length=100, unique=True)
     
     def __str__(self):
         return self.name
 
-# Define the District model
+# the District model
 class District(models.Model):
     name = models.CharField(max_length=100)
     votecode = models.CharField(max_length=20, unique=True)
@@ -35,7 +35,7 @@ class District(models.Model):
     def __str__(self):
         return f"{self.name}, {self.region}"
 
-# Define the School model
+# the School model
 class School(models.Model):
     name = models.CharField(max_length=200)
     district = models.ForeignKey(District, on_delete=models.CASCADE)
@@ -45,7 +45,7 @@ class School(models.Model):
     def __str__(self):
         return f"{self.name},{self.School_level},{self.region} {self.district}"
     
-# Define the Subject model
+# the Subject model
 class Subject(models.Model):
     name = models.CharField(max_length=100)
     subjectcode=models.IntegerField( unique=True,null=True)
@@ -53,11 +53,15 @@ class Subject(models.Model):
     def __str__(self):
         return self.name
     
+# the WorkerGrade model
+    
 class WorkerGrade(models.Model):
     grade = models.CharField(max_length=100)
     
     def __str__(self) -> str:
         return self.grade
+
+# the SalaryScale model
     
 class SalaryScale(models.Model):
     scale= models.CharField(max_length=50,null=True)
@@ -66,20 +70,32 @@ class SalaryScale(models.Model):
     def __str__(self) -> str:
         return self.scale
 
+#the gender model
 
+class Gender(models.Model):
+    name = models.CharField(max_length=20)
+    def __str__(self) -> str:
+        return self.name
 
-# Define the Teacher model
+#the position model
+    
+class Position(models.Model):
+    name = models.CharField(max_length=110)
+    def __str__(self) -> str:
+        return self.name
+
+# the Teacher model
 class Teacher(models.Model):
     fname = models.CharField(max_length=100,null=True)
     mname = models.CharField(max_length=100,null=True)
     sname = models.CharField(max_length=100, null=True)
-    check_number = models.CharField(max_length=20, unique=True,null=True)  # This is your primary key
-    position = models.CharField(max_length=100, null=True)
-    username = models.CharField(max_length=100, unique=True)
-    gender = models.CharField(max_length=10,null=True)
+    check_number = models.CharField(max_length=20, unique=True,null=True) 
+    grade = models.ForeignKey(WorkerGrade, on_delete=models.CASCADE, null=True)
+    position = models.ForeignKey(Position,on_delete=models.CASCADE, null=True)
+    gender = models.ForeignKey(Gender,on_delete=models.CASCADE,null=True)
     start_date = models.DateField(auto_now_add=True, null=True)
-    date_of_birth = models.DateField(null=True)  # Add this field for the teacher's date of birth
-    expected_retirement_date = models.DateField(null=True)
+    date_of_birth = models.DateField(null=True)
+    expected_retirement_date = models.DateField(null=True, blank=True) #
     region = models.ForeignKey(Region, on_delete=models.CASCADE, null=True)
     district = models.ForeignKey(District, on_delete=models.CASCADE, null=True)
     school_level = models.ForeignKey(SchoolLevel, on_delete=models.CASCADE)
@@ -88,24 +104,35 @@ class Teacher(models.Model):
     subjects_taught = models.ForeignKey(Subject, on_delete=models.CASCADE, null=True)
     phone = models.CharField(max_length=20, null=True)
     email = models.EmailField(null=True)
-    password = models.CharField(max_length=100, null=True)  # You should hash and salt passwords
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    # subvote = models.CharField(max_length=10, null=True) will be equal to the subject id
-    # votecode = models.CharField(max_length=10) will be equal to the district id
+   
 
-    def __str__(self):
-        return self.name
+    password = models.CharField(max_length=100, null=True, blank=True)
 
     def save(self, *args, **kwargs):
-        # Calculate the expected retirement date based on the start_date and date_of_birth
-        years_of_service = (self.start_date - self.date_of_birth).days / 365
-        retirement_age = 60  # Adjust this to the retirement age in your context
-        retirement_date = self.start_date + timedelta(days=(retirement_age - years_of_service) * 365)
-        
-        self.expected_retirement_date = retirement_date
-        super(Teacher, self).save(*args, **kwargs)
+            if self.password:
+                self.password = make_password(self.password)
+            super().save(*args, **kwargs)
+    password = models.CharField(max_length=100, null=True, blank=True)  # You should hash and salt passwords
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
 
+ 
+
+    def save(self, *args, **kwargs):
+      
+    
+        if self.date_of_birth and self.start_date:
+            # Calculate the expected retirement date
+            years_of_service = (self.start_date - self.date_of_birth).days / 365
+            retirement_age = 60  
+            retirement_date = self.start_date + timezone.timedelta(days=(retirement_age - years_of_service) * 365)
+        
+            self.expected_retirement_date = retirement_date
+
+        super(Teacher, self).save(*args, **kwargs)
+    def __str__(self):
+        return self.sname
     
 class TransferApplication(models.Model):
     APPLICATION_TYPE_CHOICES = [
@@ -151,7 +178,7 @@ class SpecialTransfer(models.Model):
     def __str__(self):
         return f"Special Transfer #{self.SpecialTransferID}"
 
-# Define the Request model
+# the Request model
 class Request(models.Model):
     RegionID = models.ForeignKey(Region, on_delete=models.CASCADE)
     DistrictID = models.ForeignKey(District, on_delete=models.CASCADE)
@@ -162,7 +189,7 @@ class Request(models.Model):
     def __str__(self):
         return f"Request #{self.RequestID}"
 
-# Define the ArrivingTeachers model
+# the ArrivingTeachers model
 class ArrivingTeachers(models.Model):
     TeacherID = models.ForeignKey(Teacher, on_delete=models.CASCADE)
     ArrivalDate = models.DateField()
@@ -178,7 +205,7 @@ class UserRoles(models.Model):
     def __str__(self):
         return self.RoleName
 
-# Define the UserRoleAssignment model
+# the UserRoleAssignment model
 class UserRoleAssignment(models.Model):
     UserID = models.ForeignKey(Teacher, on_delete=models.CASCADE)
     RoleID = models.ForeignKey(UserRoles, on_delete=models.CASCADE)
@@ -188,7 +215,7 @@ class UserRoleAssignment(models.Model):
 
 
     
-# Define the Notification model
+# the Notification model
 class Notification(models.Model):
     UserID = models.ForeignKey(Teacher, on_delete=models.CASCADE)
     Content = models.TextField()
@@ -210,3 +237,4 @@ class Forms(models.Model):
     
     def __str__(self):
         return self.form_name
+    
