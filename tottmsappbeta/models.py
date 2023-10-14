@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.hashers import make_password
-from datetime import timezone
+from datetime import timezone 
+from django.utils.timezone import timedelta 
 
 # Create your models here.
 
@@ -104,7 +105,7 @@ class Teacher(models.Model):
     subjects_taught = models.ForeignKey(Subject, on_delete=models.CASCADE, null=True)
     phone = models.CharField(max_length=20, null=True)
     email = models.EmailField(null=True)
-   
+    image= models.ImageField(upload_to='images/',null=True, blank=True)
 
     password = models.CharField(max_length=100, null=True, blank=True)
 
@@ -120,19 +121,25 @@ class Teacher(models.Model):
  
 
     def save(self, *args, **kwargs):
-      
-    
         if self.date_of_birth and self.start_date:
             # Calculate the expected retirement date
             years_of_service = (self.start_date - self.date_of_birth).days / 365
             retirement_age = 60  
-            retirement_date = self.start_date + timezone.timedelta(days=(retirement_age - years_of_service) * 365)
+            retirement_date = self.start_date + timezone.timedelta(days=int((retirement_age - years_of_service) * 365))
         
             self.expected_retirement_date = retirement_date
 
         super(Teacher, self).save(*args, **kwargs)
+
     def __str__(self):
         return self.sname
+
+class TransferReasons(models.Model):
+    reason = models.CharField(max_length=100, null=True)
+    
+    def __str__(self) -> str:
+        return self.reason
+    
     
 class TransferApplication(models.Model):
     APPLICATION_TYPE_CHOICES = [
@@ -155,6 +162,7 @@ class TransferApplication(models.Model):
     TeacherID = models.ForeignKey(Teacher, on_delete=models.CASCADE)
     ApplicationType = models.CharField(max_length=20, choices=APPLICATION_TYPE_CHOICES)
     Status = models.CharField(max_length=20, choices=STATUS_CHOICES)
+    Reasons_type=models.ForeignKey(TransferReasons, on_delete=models.CASCADE, null=True)
     Reasons = models.TextField()
     ApplicationDate = models.DateField()
     SupportingDocuments = models.FileField(upload_to='supporting_documents/')
@@ -237,4 +245,6 @@ class Forms(models.Model):
     
     def __str__(self):
         return self.form_name
+    
+
     

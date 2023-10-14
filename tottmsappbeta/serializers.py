@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import EducationLevel,  Region, District, School, Subject, Teacher, TransferApplication, SpecialTransfer, Request, ArrivingTeachers, UserRoles, UserRoleAssignment, Notification,SchoolLevel,SalaryScale,WorkerGrade,SalaryTransfer,Gender,Position
+from .models import EducationLevel,  Region, District, School, Subject, Teacher, TransferApplication, SpecialTransfer, Request, ArrivingTeachers, UserRoles, UserRoleAssignment, Notification,SchoolLevel,SalaryScale,WorkerGrade,SalaryTransfer,Gender,Position,TransferReasons
 
 class EducationLevelSerializer(serializers.ModelSerializer):
     class Meta:
@@ -94,4 +94,9 @@ class GenderSerializer(serializers.ModelSerializer):
 class PositionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Position
+        fields = '__all__'
+        
+class TransferReasonsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TransferReasons
         fields = '__all__'

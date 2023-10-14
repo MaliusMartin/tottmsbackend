@@ -69,4 +69,8 @@ urlpatterns = [
 
     path('positions/', views.PositionListCreateView.as_view(), name='position-list-create'),
     path('positions/<int:id>/', views.PositionRetrieveUpdateDestroyView.as_view(), name='position-retrieve-update-destroy'),
+    
+    path('treasons/', views.ReasonsList.as_view(), name='reasons-list'),
+    path('treasons/<int:id>/', views.ReasonsList.as_view(), name='reasons-list'),
+ 
 ]

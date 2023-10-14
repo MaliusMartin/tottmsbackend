@@ -6,8 +6,8 @@ from rest_framework import permissions, generics
 from rest_framework.decorators import api_view, permission_classes
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
-from .models import EducationLevel, Region, District, School, Subject, Teacher, TransferApplication, SpecialTransfer, Request, ArrivingTeachers, UserRoles, UserRoleAssignment, Notification,SchoolLevel,SalaryScale,WorkerGrade,SalaryTransfer,Forms,Gender,Position
-from .serializers import EducationLevelSerializer,  RegionSerializer, DistrictSerializer, SchoolSerializer, SubjectSerializer, TeacherSerializer, TransferApplicationSerializer, SpecialTransferSerializer, RequestSerializer, ArrivingTeachersSerializer,UserRolesSerializer, UserRoleAssignmentSerializer, NotificationSerializer,SchoolLevelSerializer, SalaryScaleSerializer,WorkerGradeSerializer,SalaryTransferSerializer,GenderSerializer,PositionSerializer
+from .models import EducationLevel, Region, District, School, Subject, Teacher, TransferApplication, SpecialTransfer, Request, ArrivingTeachers, UserRoles, UserRoleAssignment, Notification,SchoolLevel,SalaryScale,WorkerGrade,SalaryTransfer,Forms,Gender,Position,TransferReasons
+from .serializers import EducationLevelSerializer,  RegionSerializer, DistrictSerializer, SchoolSerializer, SubjectSerializer, TeacherSerializer, TransferApplicationSerializer, SpecialTransferSerializer, RequestSerializer, ArrivingTeachersSerializer,UserRolesSerializer, UserRoleAssignmentSerializer, NotificationSerializer,SchoolLevelSerializer, SalaryScaleSerializer,WorkerGradeSerializer,SalaryTransferSerializer,GenderSerializer,PositionSerializer,TransferReasonsSerializer
 
 
 # Create your views here.
@@ -836,4 +836,12 @@ class PositionListCreateView(generics.ListCreateAPIView):
 class PositionRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Position.objects.all()
     serializer_class = PositionSerializer
+    
+class ReasonsList(generics.ListCreateAPIView):
+    queryset = TransferReasons.objects.all()
+    serializer_class = TransferReasonsSerializer
+
+class ReasonCreate(generics.RetrieveUpdateDestroyAPIView):
+    queryset= TransferReasons.objects.all()
+    serializer_class = TransferReasonsSerializer
     

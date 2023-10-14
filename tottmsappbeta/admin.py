@@ -45,9 +45,9 @@ class WorkerGradeAdmin(admin.ModelAdmin):
 
 
 class TeacherAdmin(admin.ModelAdmin):
-    list_display = ('id','fname','mname','sname','check_number','grade','gender','position','start_date','date_of_birth','expected_retirement_date','region','district','school_level','school','education_level','subjects_taught','phone','email','password','created_at','updated_at')
-    search_fields = ('id','fname','mname','sname','check_number','grade','gender','position','start_date','date_of_birth','expected_retirement_date','region','district','school_level','school','education_level','subjects_taught','phone','email','password','created_at','updated_at')
-    list_filter =('id','fname','mname','sname','check_number','grade','gender','position','start_date','date_of_birth','expected_retirement_date','region','district','school_level','school','education_level','subjects_taught','phone','email','password','created_at','updated_at')
+    list_display = ('id','fname','mname','sname','check_number','grade','gender','position','start_date','date_of_birth','expected_retirement_date','region','district','school_level','school','education_level','subjects_taught','phone','email','password','created_at','updated_at','image')
+    search_fields = ('id','fname','mname','sname','check_number','grade','gender','position','start_date','date_of_birth','expected_retirement_date','region','district','school_level','school','education_level','subjects_taught','phone','email','password','created_at','updated_at','image')
+    list_filter =('id','fname','mname','sname','check_number','grade','gender','position','start_date','date_of_birth','expected_retirement_date','region','district','school_level','school','education_level','subjects_taught','phone','email','password','created_at','updated_at','image')
 
     
 class  GenderAdmin(admin.ModelAdmin):
