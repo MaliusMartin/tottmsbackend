@@ -35,7 +35,14 @@ SECRET_KEY = 'django-insecure-i&0irxt$*!%ol6s^&0icc)q2&2myub2ve9!bi-as3gy932#wr3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['tottmsbackend.azurewebsites.net']
+ALLOWED_HOSTS = ['tottmsbackend.azurewebsites.net','127.0.0.1','localhost']
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',
+    
+    'https://tottmsbackend.azurewebsites.net'
+
+]
 
 
 # Application definition
