@@ -43,6 +43,21 @@ CORS_ALLOWED_ORIGINS = [
     'https://tottmsbackend.azurewebsites.net'
 
 ]
+CORS_ALLOW_ALL_ORIGINS = True  # This allows requests from all origins. For production, consider specifying allowed origins explicitly.
+CORS_ALLOW_CREDENTIALS = True  # This allows cookies to be included in cross-origin requests.
+
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+
 
 
 # Application definition
