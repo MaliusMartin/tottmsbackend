@@ -37,11 +37,19 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['tottmsbackend.azurewebsites.net','127.0.0.1','localhost']
 
+CSRF_COOKIE_SECURE = True
+
+CSRF_TRUSTED_ORIGINS = ['https://tottmsbackend.azurewebsites.net']
+
+
+SESSION_COOKIE_SECURE = True
+
+
+
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
     
     'https://tottmsbackend.azurewebsites.net'
-
 ]
 CORS_ALLOW_ALL_ORIGINS = True  # This allows requests from all origins. For production, consider specifying allowed origins explicitly.
 CORS_ALLOW_CREDENTIALS = True  # This allows cookies to be included in cross-origin requests.
