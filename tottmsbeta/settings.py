@@ -11,10 +11,15 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+from django.conf import settings
+from django.conf.urls.static import static
+import os
+from datetime import timedelta
 
 import pymysql
-import os
 
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -49,66 +54,45 @@ SESSION_COOKIE_SECURE = True
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
     
-    'https://tottmsbackend.azurewebsites.net'
-]
-CORS_ALLOW_ALL_ORIGINS = True  # This allows requests from all origins. For production, consider specifying allowed origins explicitly.
-CORS_ALLOW_CREDENTIALS = True  # This allows cookies to be included in cross-origin requests.
-
-CORS_ALLOW_HEADERS = [
-    'accept',
-    'accept-encoding',
-    'authorization',
-    'content-type',
-    'dnt',
-    'origin',
-    'user-agent',
-    'x-csrftoken',
-    'x-requested-with',
+    'https://tottmsbackend.azurewebsites.net',
+    
 ]
 
+CORS_ALLOW_METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
+CORS_ALLOW_HEADERS = ["content-type", "authorization"]
+CORS_ALLOW_CREDENTIALS = True
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    # Application Added
     'tottmsappbeta',
+    'rest_framework_jwt',
+    'rest_framework',  # Correct package name
+    'corsheaders',
+    'whitenoise.runserver_nostatic',
+    
+    #Genuine application
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',  # Correct package name
-    'corsheaders',
-    # Add your other apps here
+   
 ]
 
 
 
-# CORS_ALLOWED_ORIGINS = [
-#     'http://localhost:3000'
-#     # add more origins as needed
-# ]
 
-CORS_ALLOW_ALL_ORIGINS = True  
-# CORS_ALLOW_CREDENTIALS = True 
-
-# CORS_ALLOW_HEADERS = [
-#     'accept',
-#     'accept-encoding',
-#     'authorization',
-#     'content-type',
-#     'dnt',
-#     'origin',
-#     'user-agent',
-#     'x-csrftoken',
-#     'x-requested-with',
-# ]
 
 MIDDLEWARE = [
   
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    #added whitenoise middleware
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -116,6 +100,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+
 
 ROOT_URLCONF = 'tottmsbeta.urls'
 
@@ -204,3 +190,23 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        # Add other authentication classes if needed
+    ],
+}
+
+JWT_AUTH = {
+    'JWT_RESPONSE_PAYLOAD_HANDLER': 'yourapp.utils.jwt_response_handler',
+    'JWT_EXPIRATION_DELTA': timedelta(seconds=300),  # Adjust as needed
+}
+
+
+#Static files (CSS, JavaScript, Images)
+STATICFILES_DIRS = (str(BASE_DIR.joinpath('static')),)
+STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'  

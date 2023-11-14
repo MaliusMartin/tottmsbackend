@@ -2,6 +2,11 @@ from django.db import models
 from django.contrib.auth.hashers import make_password
 from datetime import timezone 
 from django.utils.timezone import timedelta 
+from django.utils import timezone
+# from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.validators import MaxLengthValidator, MinLengthValidator
+
+
 
 # Create your models here.
 
@@ -90,7 +95,7 @@ class Teacher(models.Model):
     fname = models.CharField(max_length=100,null=True)
     mname = models.CharField(max_length=100,null=True)
     sname = models.CharField(max_length=100, null=True)
-    check_number = models.CharField(max_length=20, unique=True,null=True) 
+    username = models.CharField(max_length=20, unique=True,null=True) 
     grade = models.ForeignKey(WorkerGrade, on_delete=models.CASCADE, null=True)
     position = models.ForeignKey(Position,on_delete=models.CASCADE, null=True)
     gender = models.ForeignKey(Gender,on_delete=models.CASCADE,null=True)
@@ -106,14 +111,20 @@ class Teacher(models.Model):
     phone = models.CharField(max_length=20, null=True)
     email = models.EmailField(null=True)
     image= models.ImageField(upload_to='images/',null=True, blank=True)
+    nin = models.CharField(
+    max_length=20,
+    null=True,
+    blank=True,
+    validators=[
+        MaxLengthValidator(limit_value=20),
+        MinLengthValidator(limit_value=20),
+    ])
 
-    password = models.CharField(max_length=100, null=True, blank=True)
-
+    password = models.CharField(max_length=180, null=True, blank=True)  # You should hash and salt passwords
     def save(self, *args, **kwargs):
-            if self.password:
-                self.password = make_password(self.password)
-            super().save(*args, **kwargs)
-    password = models.CharField(max_length=100, null=True, blank=True)  # You should hash and salt passwords
+        if self.password and not self.password.startswith('bcrypt_sha256$'):
+            self.password = make_password(self.password)
+        super().save(*args, **kwargs)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
@@ -158,21 +169,22 @@ class TransferApplication(models.Model):
         ('Not Approved', 'Not Approved'),
     ]
 
-   
-    TeacherID = models.ForeignKey(Teacher, on_delete=models.CASCADE)
-    ApplicationType = models.CharField(max_length=20, choices=APPLICATION_TYPE_CHOICES)
-    Status = models.CharField(max_length=20, choices=STATUS_CHOICES)
+    id = models.AutoField(primary_key=True)
+    TeacherID = models.ForeignKey(Teacher, on_delete=models.CASCADE , null=True)
+    ApplicationType = models.CharField(max_length=20, choices=APPLICATION_TYPE_CHOICES ,null=True, blank=True)
+    Status = models.CharField(max_length=20, choices=STATUS_CHOICES ,null=True,blank=True)
     Reasons_type=models.ForeignKey(TransferReasons, on_delete=models.CASCADE, null=True)
-    Reasons = models.TextField()
+    Reasons = models.TextField( blank=True, null=True)
     ApplicationDate = models.DateField(auto_now_add=True)
-    SupportingDocuments = models.FileField(upload_to='supporting_documents/')
+    SupportingDocuments = models.FileField(upload_to='supporting_documents/',null=True, blank=True)
     FromRegionID = models.ForeignKey(Region,on_delete=models.CASCADE, blank=True, null=True,related_name='from_region')
     FromDistrictID = models.ForeignKey(District, on_delete=models.CASCADE, related_name='from_district')
     ToRegionID = models.ForeignKey(Region, blank=True,on_delete=models.CASCADE, null=True,related_name='to_region')
     ToDistrictID = models.ForeignKey(District, on_delete=models.CASCADE, related_name='to_district')
     Comments = models.TextField(blank=True, null=True)
-    ApprovalStatus = models.CharField(max_length=20, choices=APPROVAL_STATUS_CHOICES)
+    ApprovalStatus = models.CharField(max_length=20, choices=APPROVAL_STATUS_CHOICES, null=True,blank=True)
     decision_date = models.DateField(auto_now=True,null=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
     def __str__(self):

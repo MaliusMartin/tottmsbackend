@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Forms, SchoolLevel, Region, District, School, Subject, SalaryScale, WorkerGrade,Teacher,Gender,Position
+from .models import Forms, SchoolLevel, Region, District, School, Subject, SalaryScale, WorkerGrade,Teacher,Gender,Position,TransferApplication
 
 # Register your models here.
 
@@ -45,9 +45,9 @@ class WorkerGradeAdmin(admin.ModelAdmin):
 
 
 class TeacherAdmin(admin.ModelAdmin):
-    list_display = ('id','fname','mname','sname','check_number','grade','gender','position','start_date','date_of_birth','expected_retirement_date','region','district','school_level','school','education_level','subjects_taught','phone','email','password','created_at','updated_at','image')
-    search_fields = ('id','fname','mname','sname','check_number','grade','gender','position','start_date','date_of_birth','expected_retirement_date','region','district','school_level','school','education_level','subjects_taught','phone','email','password','created_at','updated_at','image')
-    list_filter =('id','fname','mname','sname','check_number','grade','gender','position','start_date','date_of_birth','expected_retirement_date','region','district','school_level','school','education_level','subjects_taught','phone','email','password','created_at','updated_at','image')
+    list_display = ('id','fname','mname','sname','username','grade','gender','position','start_date','date_of_birth','expected_retirement_date','region','district','school_level','school','education_level','subjects_taught','phone','email','password','created_at','updated_at','image','nin')
+    search_fields = ('id','fname','mname','sname','username','grade','gender','position','start_date','date_of_birth','expected_retirement_date','region','district','school_level','school','education_level','subjects_taught','phone','email','password','created_at','updated_at','image','nin')
+    list_filter =('id','fname','mname','sname','username','grade','gender','position','start_date','date_of_birth','expected_retirement_date','region','district','school_level','school','education_level','subjects_taught','phone','email','password','created_at','updated_at','image','nin')
 
     
 class  GenderAdmin(admin.ModelAdmin):
@@ -60,7 +60,12 @@ class PositionAdmin(admin.ModelAdmin):
     search_fields = ('id','name')
     list_filter = ('id','name')
     
-    
+class TransferApplicationAdmin(admin.ModelAdmin):
+    list_display = ('id','ApplicationType','ApplicationDate','Reasons_type',)
+    search_fields = ('id','ApplicationType','ApplicationDate','TransferDate','Reasons_type','Updated_at')
+    list_filter = ('id','ApplicationType','ApplicationDate','Reasons_type')
+  
+admin.site.register(TransferApplication,TransferApplicationAdmin)   
 admin.site.register(Forms,FormsAdmin)
 admin.site.register(SchoolLevel,SchoollevelsAdmin)
 admin.site.register(Region,RegionAdmin)

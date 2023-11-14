@@ -6,6 +6,12 @@ from rest_framework import permissions, generics
 from rest_framework.decorators import api_view, permission_classes
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from django.contrib.auth import authenticate, login
+
 from .models import EducationLevel, Region, District, School, Subject, Teacher, TransferApplication, SpecialTransfer, Request, ArrivingTeachers, UserRoles, UserRoleAssignment, Notification,SchoolLevel,SalaryScale,WorkerGrade,SalaryTransfer,Forms,Gender,Position,TransferReasons
 from .serializers import EducationLevelSerializer,  RegionSerializer, DistrictSerializer, SchoolSerializer, SubjectSerializer, TeacherSerializer, TransferApplicationSerializer, SpecialTransferSerializer, RequestSerializer, ArrivingTeachersSerializer,UserRolesSerializer, UserRoleAssignmentSerializer, NotificationSerializer,SchoolLevelSerializer, SalaryScaleSerializer,WorkerGradeSerializer,SalaryTransferSerializer,GenderSerializer,PositionSerializer,TransferReasonsSerializer
 
@@ -844,4 +850,14 @@ class ReasonsList(generics.ListCreateAPIView):
 class ReasonCreate(generics.RetrieveUpdateDestroyAPIView):
     queryset= TransferReasons.objects.all()
     serializer_class = TransferReasonsSerializer
+    
+class LoginView(APIView):
+    def post(self, request):
+        check_number = request.data.get('check_number')
+        password = request.data.get('password')
+        user = authenticate(request, check_number=check_number, password=password)
+        if user is not None:
+            login(request, user)
+            return Response({'message': 'Login successful'}, status=status.HTTP_200_OK)
+        return Response({'message': 'Login failed'}, status=status.HTTP_401_UNAUTHORIZED)
     

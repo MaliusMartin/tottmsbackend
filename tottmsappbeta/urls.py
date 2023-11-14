@@ -72,5 +72,10 @@ urlpatterns = [
     
     path('treasons/', views.ReasonsList.as_view(), name='reasons-list'),
     path('treasons/<int:id>/', views.ReasonsList.as_view(), name='reasons-list'),
+    
+    
+    path('auth/login/', views.LoginView.as_view(), name='login'),  # Handle user login
+    # path('auth/logout/', views.LogoutView.as_view(), name='logout'),  # Handle user logout
+    # path('auth/register/', views.RegisterView.as_view(), name='register'),
  
 ]
