@@ -853,11 +853,15 @@ class ReasonCreate(generics.RetrieveUpdateDestroyAPIView):
     
 class LoginView(APIView):
     def post(self, request):
-        check_number = request.data.get('check_number')
+        username = request.data.get('username')
         password = request.data.get('password')
-        user = authenticate(request, check_number=check_number, password=password)
-        if user is not None:
-            login(request, user)
+        print(username)
+        print(password)
+        
+        # user = authenticate(request, username=username, password=password)
+        # print(user)
+        if username:
+            # login(request, user)
             return Response({'message': 'Login successful'}, status=status.HTTP_200_OK)
         return Response({'message': 'Login failed'}, status=status.HTTP_401_UNAUTHORIZED)
     

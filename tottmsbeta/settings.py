@@ -49,14 +49,14 @@ CSRF_TRUSTED_ORIGINS = ['https://tottmsbackend.azurewebsites.net']
 
 SESSION_COOKIE_SECURE = True
 
+CORS_ALLOWED_ORIGINS = ['http://localhost:3001']
 
-
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
+# CORS_ALLOWED_ORIGINS = [
+#     'http://localhost:3000',
     
-    'https://tottmsbackend.azurewebsites.net',
+#     'https://tottmsbackend.azurewebsites.net',
     
-]
+# ]
 
 CORS_ALLOW_METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
 CORS_ALLOW_HEADERS = ["content-type", "authorization"]
@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     'rest_framework',  # Correct package name
     'corsheaders',
     'whitenoise.runserver_nostatic',
+    'rest_framework_simplejwt',
     
     #Genuine application
     'django.contrib.admin',
@@ -88,9 +89,9 @@ INSTALLED_APPS = [
 
 
 MIDDLEWARE = [
-  
-    'corsheaders.middleware.CorsMiddleware',
+    
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     #added whitenoise middleware
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -194,7 +195,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
         # Add other authentication classes if needed
     ],
 }
@@ -203,6 +204,7 @@ JWT_AUTH = {
     'JWT_RESPONSE_PAYLOAD_HANDLER': 'yourapp.utils.jwt_response_handler',
     'JWT_EXPIRATION_DELTA': timedelta(seconds=300),  # Adjust as needed
 }
+
 
 
 #Static files (CSS, JavaScript, Images)

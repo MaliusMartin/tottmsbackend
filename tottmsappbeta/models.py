@@ -105,7 +105,7 @@ class Teacher(models.Model):
     region = models.ForeignKey(Region, on_delete=models.CASCADE, null=True)
     district = models.ForeignKey(District, on_delete=models.CASCADE, null=True)
     school_level = models.ForeignKey(SchoolLevel, on_delete=models.CASCADE)
-    school = models.ForeignKey(School, on_delete=models.CASCADE, null=True)
+    school = models.ForeignKey(School, on_delete=models.CASCADE, null=True, blank=True)
     education_level = models.ForeignKey(EducationLevel, on_delete=models.CASCADE, null=True)
     subjects_taught = models.ForeignKey(Subject, on_delete=models.CASCADE, null=True)
     phone = models.CharField(max_length=20, null=True)
